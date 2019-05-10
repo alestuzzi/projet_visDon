@@ -1,0 +1,6 @@
+racine
+https://opendata.swiss/fr/dataset/solarenergiepotenziale-der-schweizer-gemeinden
+API
+https://opendata.swiss/api/3/action/package_show?id=solarenergiepotenziale-der-schweizer-gemeinden
+autres sujets similaires
+https://www.bfe.admin.ch/bfe/fr/home/actualites-et-medias/open-government-data.exturl.html
