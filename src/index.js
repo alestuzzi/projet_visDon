@@ -13,14 +13,20 @@ const getCommune = (MunicipalityNumber, features) =>
 
 
 
-const map = L.map('map').setView([46.7965, 8.115], 9)
+const map = L.map('map', {
+  center: [46.7965, 8.115],
+  zoom: 13,
+})
 
 const osmCH = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	maxZoom: 8,
+  
+	maxZoom: 20,
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
 
 osmCH.addTo(map)
+
+
 
 // trier les cantons pour obtenir les 5 premières communes 
 
@@ -64,8 +70,10 @@ const getCoords = feature => LV03toWGS([
 const d = data.map(getCoords)
 
 $.each(data, function(i, obj) {
-  L.marker([d[i][1], d[i][0]]).addTo(map);
+  L.marker([d[i][1], d[i][0]]).addTo(map)
+  .bindPopup("<b>Hello world!</b><br>I am a popup.")
 });
+
 
 // rendre les points de communes cliquable
 
