@@ -1,80 +1,83 @@
-const fetch = require('node-fetch')
-const data = require('./solaire.json')
-const communes = require('./communes.json')
+const fetch = require('node-fetch');
+const data = require('../data/data.json');
 import L from 'leaflet';
 import $ from 'jquery';
+
 const { LV03toWGS } = require('swiss-projection')
 
-// GMDNR
-// MunicipalityNumber
-
-const getCommune = (MunicipalityNumber, features) =>
-  features.find(f => f.properties.GMDNR === Number(MunicipalityNumber))
-
-
-
 const map = L.map('map', {
-  center: [46.7965, 8.115],
-  zoom: 13,
+  center: [46.667970, 6.586361],
+  zoom: 11,
 })
 
-const osmCH = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  
+const osmCH = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	subdomains: 'abcd',
+	minZoom: 0,
 	maxZoom: 20,
-	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	ext: 'png'
 });
 
 osmCH.addTo(map)
 
-
-
-// trier les cantons pour obtenir les 5 premières communes 
-
-//console.log(data[i].properties.Canton);
-/*
-const resultat = data.map(d => {
-  d.sort(data.properties.Canton)  //tri par canton
-  //tri par potentiel solaire
-  //ne séléctionner que les 5 premiers
-  //ajouter au tableau
-})
-
-var i;
-for (i = 0; i < 6; i++) {
-  billboardLeHobbit.map();
-} 
-
-
-*/
-/*
-const years = Object.keys(o)
- .filter(key => key !== 'Year')
- .map(Number)
-
-const list = years.map(year => ({
- year,
- population: Number(o[year])
-}))
-
-console.log(list)
-*/
-
-
 // afficher les communes sur la carte
 
-const getCoords = feature => LV03toWGS([
-  feature.properties.X_CNTR,
-  feature.properties.Y_CNTR,
-])
 
-const d = data.map(getCoords)
+const d = data
 
-$.each(data, function(i, obj) {
-  L.marker([d[i][1], d[i][0]]).addTo(map)
-  .bindPopup("<b>Hello world!</b><br>I am a popup.")
+var panneau = L.icon({
+    iconUrl: 'solar.png',
+    shadowUrl: 'shadow.png',
+
+    iconSize:     [51, 51], // size of the icon
+    shadowSize:   [51, 51], // size of the shadow
+    iconAnchor:   [25, 0], // point of the icon which will correspond to marker's location
+    shadowAnchor: [17, 0],  // the same for the shadow
+    popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+});
+
+$(document).ready(function(){
+  $("#btn1").trigger("click");
+});
+
+// gestion des scenarii
+
+$("#btn1").on("click", evt => {
+
+  $(":button").removeClass("btn btn-success");
+  let btn = $(evt.currentTarget);
+  btn.addClass("btn btn-success");
+
+  $.each(data, function(i, obj) {
+    L.marker([obj.coordinates[1], obj.coordinates[0]],{icon: panneau}).addTo(map)
+    .bindPopup("<b>Nom: </b>" + obj.commune_name + "<br> <b>Potentiel solaire: </b>" 
+    + obj.roofs_1 + " GWh")
+  });
+});
+
+$("#btn2").on("click", evt => {
+
+  $(":button").removeClass("btn btn-success");
+  let btn = $(evt.currentTarget);
+  btn.addClass("btn btn-success");
+
+  $.each(data, function(i, obj) {
+    L.marker([obj.coordinates[1], obj.coordinates[0]],{icon: panneau}).addTo(map)
+    .bindPopup("<b>Nom: </b>" + obj.commune_name + "<br> <br> <b>Potentiel solaire: </b>" 
+    + obj.roofs_2 + " GWh")
+  });
 });
 
 
-// rendre les points de communes cliquable
+$("#btn3").on("click", evt => {
 
-// afficher les informations relatives à la commune
+  $(":button").removeClass("btn btn-success");
+  let btn = $(evt.currentTarget);
+  btn.addClass("btn btn-success");
+
+  $.each(data, function(i, obj) {
+    L.marker([obj.coordinates[1], obj.coordinates[0]],{icon: panneau}).addTo(map)
+    .bindPopup("<b>Nom: </b>" + obj.commune_name + "<br> <b>Potentiel solaire: </b>" 
+    + obj.facades_3 + " GWh")
+  });
+});
